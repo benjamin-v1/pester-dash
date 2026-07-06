@@ -1,0 +1,22 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <ItemGroup>
+    <ProjectReference Include="..\PesterDash.Core\PesterDash.Core.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.Hosting" Version="10.0.9" />
+    <PackageReference Include="Spectre.Console" Version="0.57.2" />
+    <PackageReference Include="System.CommandLine" Version="2.0.9" />
+  </ItemGroup>
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <AssemblyName>pesterdash</AssemblyName>
+    <RootNamespace>PesterDash.Cli</RootNamespace>
+  </PropertyGroup>
+
+</Project>

@@ -1,0 +1,9 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/PesterDash.Cli/PesterDash.Cli.csproj" />
+    <Project Path="src/PesterDash.Core/PesterDash.Core.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/PesterDash.Core.Tests/PesterDash.Core.Tests.csproj" />
+  </Folder>
+</Solution>

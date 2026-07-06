@@ -1,0 +1,20 @@
+## .NET
+bin/
+obj/
+*.user
+*.suo
+.vs/
+*.DotSettings.user
+
+## Build artefacts
+.artifacts/
+artifacts/
+coverage/
+
+## IDE
+.idea/
+*.swp
+
+## OS
+.DS_Store
+Thumbs.db
