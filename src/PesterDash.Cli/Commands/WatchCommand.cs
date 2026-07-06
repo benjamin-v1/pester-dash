@@ -5,7 +5,7 @@ namespace PesterDash.Cli.Commands;
 
 internal static class WatchCommand
 {
-    public static Command Create()
+    public static Command Create(IServiceProvider services)
     {
         var projectRoot = new Argument<string>("project-root")
         {

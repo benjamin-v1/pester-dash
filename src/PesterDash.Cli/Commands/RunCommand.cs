@@ -1,11 +1,13 @@
 using System.CommandLine;
+using Microsoft.Extensions.DependencyInjection;
+using PesterDash.Core.Interfaces;
 using Spectre.Console;
 
 namespace PesterDash.Cli.Commands;
 
 internal static class RunCommand
 {
-    public static Command Create()
+    public static Command Create(IServiceProvider services)
     {
         var projectRoot = new Argument<string>("project-root")
         {
@@ -50,10 +52,21 @@ internal static class RunCommand
             CommandOutput.WriteBanner();
             CommandOutput.WriteProjectContext(context);
 
+            var discovery = services.GetRequiredService<IProjectDiscovery>();
+            var result = discovery.Discover(context.ProjectRoot, context.Options);
+
+            DiscoveryOutput.Write(result);
+
+            if (!result.HasTests)
+            {
+                AnsiConsole.MarkupLine("[red]No test files found.[/] Look for [grey]*.Tests.ps1[/] or files under [grey]tests/[/].");
+                return 1;
+            }
+
             var ciMode = parseResult.GetValue(ci);
             AnsiConsole.MarkupLine(ciMode
-                ? "[yellow]CI mode[/] — interactive dashboard will be skipped."
-                : "[grey]Run command scaffold ready — test execution not yet implemented.[/]");
+                ? "[yellow]CI mode[/] — test execution not yet implemented."
+                : "[grey]Discovery complete — test execution not yet implemented.[/]");
 
             await Task.CompletedTask;
             return 0;

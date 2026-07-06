@@ -44,4 +44,10 @@ Optional `pesterdash.json` in the project root (or any parent directory):
 
 **Phase 1 complete:** solution scaffold, DI host, config loading, stub commands.
 
-Next up: project discovery and Pester execution.
+**Phase 2 complete:** project discovery — `run` finds `*.Tests.ps1` and files under `tests/`.
+
+```bash
+dotnet run --project src/PesterDash.Cli -- run samples/SampleModule
+```
+
+Next up: Pester execution via `pwsh`.

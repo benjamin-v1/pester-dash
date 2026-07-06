@@ -12,10 +12,10 @@ using var host = builder.Build();
 
 var rootCommand = new RootCommand("Discover, run, and visualize Pester tests.")
 {
-    RunCommand.Create(),
-    WatchCommand.Create(),
-    ReportCommand.Create(),
-    CleanCommand.Create(),
+    RunCommand.Create(host.Services),
+    WatchCommand.Create(host.Services),
+    ReportCommand.Create(host.Services),
+    CleanCommand.Create(host.Services),
 };
 
 try

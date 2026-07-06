@@ -1,8 +1,13 @@
+using PesterDash.Core.Configuration;
+using PesterDash.Core.Models;
+
 namespace PesterDash.Core.Interfaces;
 
 /// <summary>Discovers test and source files in a PowerShell project.</summary>
 public interface IProjectDiscovery
 {
+    /// <summary>Discovers test and source files under <paramref name="projectRoot"/>.</summary>
+    DiscoveryResult Discover(string projectRoot, PesterDashOptions options);
 }
 
 /// <summary>Runs Pester tests via an external <c>pwsh</c> process.</summary>
