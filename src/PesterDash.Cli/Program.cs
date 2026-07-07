@@ -12,7 +12,9 @@ using var host = builder.Build();
 
 var rootCommand = new RootCommand("Discover, run, and visualize Pester tests.")
 {
+    OpenCommand.Create(host.Services),
     RunCommand.Create(host.Services),
+    ScopeCommand.Create(host.Services),
     WatchCommand.Create(host.Services),
     ReportCommand.Create(host.Services),
     CleanCommand.Create(host.Services),

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-results total="1" passed="0" failed="1" skipped="0" duration="0.08">
+  <test-suite name="Pester">
+    <results>
+      <test-suite name="C:\project\tests\Sample.Tests.ps1">
+        <results>
+          <test-suite name="Sample">
+            <results>
+              <test-case name="Sample.Should fail" result="Failed" time="0.08">
+                <failure>
+                  <message>Expected 1, but got 2.</message>
+                  <stack-trace>at line 10</stack-trace>
+                </failure>
+              </test-case>
+            </results>
+          </test-suite>
+        </results>
+      </test-suite>
+    </results>
+  </test-suite>
+</test-results>

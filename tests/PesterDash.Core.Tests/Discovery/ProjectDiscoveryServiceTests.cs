@@ -23,26 +23,45 @@ public class ProjectDiscoveryServiceTests
     }
 
     [Fact]
-    public void Discover_FindsTestsInTestsDirectory()
+    public void Discover_FindsTestsInTestsDirectory_WhenNamedWithTestsSuffix()
     {
         using var root = new TempProject();
         root.WriteFile("tests/Install.ps1", "");
+        root.WriteFile("tests/Install.Tests.ps1", "");
 
         var result = _sut.Discover(root.Path, new PesterDashOptions());
 
-        Assert.Single(result.TestFiles);
-        Assert.EndsWith(Path.Combine("tests", "Install.ps1"), result.TestFiles[0], StringComparison.OrdinalIgnoreCase);
+        Assert.Equal(2, result.TestFiles.Count);
+        Assert.Empty(result.SourceFiles);
     }
 
     [Fact]
     public void Discover_FindsTestsInTestDirectory_CaseInsensitive()
     {
         using var root = new TempProject();
-        root.WriteFile("Test/Helper.ps1", "");
+        root.WriteFile("Test/Helper.Tests.ps1", "");
 
         var result = _sut.Discover(root.Path, new PesterDashOptions());
 
         Assert.Single(result.TestFiles);
+    }
+
+    [Fact]
+    public void Discover_IncludesTestRunnerScriptsAsCandidates()
+    {
+        using var root = new TempProject();
+        root.WriteFile("tests/unit/run-tests.ps1", "");
+        root.WriteFile("tests/unit/run-all.ps1", "");
+        root.WriteFile("tests/unit/_bootstrap.ps1", "");
+        root.WriteFile("tests/unit/Shared.helper.ps1", "");
+        root.WriteFile("tests/unit/Gateway.Unit.Tests.ps1", "");
+
+        var result = _sut.Discover(root.Path, new PesterDashOptions());
+
+        Assert.Equal(5, result.TestFiles.Count);
+        Assert.Contains(result.TestFiles, path => path.Contains("Gateway.Unit.Tests.ps1", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(result.TestFiles, path => path.Contains("run-tests.ps1", StringComparison.OrdinalIgnoreCase));
+        Assert.Empty(result.SourceFiles);
     }
 
     [Fact]

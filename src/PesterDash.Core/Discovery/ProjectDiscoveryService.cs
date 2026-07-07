@@ -76,7 +76,7 @@ public sealed class ProjectDiscoveryService : IProjectDiscovery
             {
                 testFiles.Add(file);
             }
-            else
+            else if (!IsUnderTestDirectory(file, root))
             {
                 sourceFiles.Add(file);
             }
@@ -129,11 +129,18 @@ public sealed class ProjectDiscoveryService : IProjectDiscovery
     {
         var fileName = Path.GetFileName(filePath);
 
-        if (fileName.EndsWith(".Tests.ps1", StringComparison.OrdinalIgnoreCase))
+        if (fileName.EndsWith(".Tests.ps1", StringComparison.OrdinalIgnoreCase)
+            || fileName.EndsWith(".Test.ps1", StringComparison.OrdinalIgnoreCase))
         {
             return true;
         }
 
+        return IsUnderTestDirectory(filePath, projectRoot)
+            && fileName.EndsWith(".ps1", StringComparison.OrdinalIgnoreCase);
+    }
+
+    private static bool IsUnderTestDirectory(string filePath, string projectRoot)
+    {
         var relative = Path.GetRelativePath(projectRoot, filePath);
         var parts = relative.Split(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
 

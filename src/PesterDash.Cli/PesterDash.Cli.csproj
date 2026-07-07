@@ -19,4 +19,11 @@
     <RootNamespace>PesterDash.Cli</RootNamespace>
   </PropertyGroup>
 
+  <ItemGroup>
+    <Content Include=".config\dotnet-tools.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+  </ItemGroup>
+
 </Project>

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<test-results total="2" passed="1" failed="0" skipped="1" time="0.12">
+  <test-suite name="Pester" executed="True" result="Success">
+    <results>
+      <test-suite name="C:\project\tests\Greeting.Tests.ps1" executed="True" result="Success">
+        <results>
+          <test-suite name="Get-Greeting" executed="True" result="Success">
+            <results>
+              <test-case name="Get-Greeting.returns a greeting" result="Passed" time="0.11" />
+              <test-case name="Get-Greeting.is pending" result="Ignored" time="0.01" />
+            </results>
+          </test-suite>
+        </results>
+      </test-suite>
+    </results>
+  </test-suite>
+</test-results>

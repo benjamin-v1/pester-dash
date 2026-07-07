@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<report name="Sample">
+  <counter type="LINE" missed="1" covered="3" />
+  <counter type="BRANCH" missed="1" covered="3" />
+</report>

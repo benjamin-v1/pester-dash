@@ -1,38 +1,58 @@
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using Microsoft.Extensions.Configuration;
+using PesterDash.Core.ProjectStore;
 
 namespace PesterDash.Core.Configuration;
 
 /// <summary>
-/// Loads <see cref="PesterDashOptions"/> from <c>pesterdash.json</c> near the project root.
+/// Loads and saves <see cref="PesterDashOptions"/> from the project store or legacy <c>pesterdash.json</c>.
 /// </summary>
 public static class ConfigurationLoader
 {
-    public const string ConfigFileName = "pesterdash.json";
+    private static readonly JsonSerializerOptions SerializerOptions = new()
+    {
+        WriteIndented = true,
+        DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
+        PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+    };
 
     /// <summary>
-    /// Loads options from <paramref name="projectRoot"/>, walking up to the filesystem root when needed.
+    /// Loads options from <paramref name="projectRoot"/>.
+    /// Prefers <c>.pester-dash/config.json</c>, then legacy <c>pesterdash.json</c>.
     /// </summary>
     public static PesterDashOptions Load(string projectRoot)
     {
         var root = Path.GetFullPath(projectRoot);
-        var configPath = FindConfigFile(root);
+        ProjectStorePaths.EnsureStore(root);
 
+        var configPath = ResolveConfigPath(root);
         if (configPath is null)
         {
-            return new PesterDashOptions();
+            return CreateDefaultOptions(root);
         }
 
         var configuration = new ConfigurationBuilder()
             .AddJsonFile(configPath, optional: false, reloadOnChange: false)
             .Build();
 
-        var options = new PesterDashOptions();
+        var options = CreateDefaultOptions(root);
         configuration.Bind(options);
         return options;
     }
 
+    /// <summary>Saves options to <c>.pester-dash/config.json</c>.</summary>
+    public static void Save(string projectRoot, PesterDashOptions options)
+    {
+        var root = Path.GetFullPath(projectRoot);
+        ProjectStorePaths.EnsureStore(root);
+        var configPath = ProjectStorePaths.GetConfigPath(root);
+        var json = JsonSerializer.Serialize(options, SerializerOptions);
+        File.WriteAllText(configPath, json);
+    }
+
     /// <summary>
-    /// Finds <c>pesterdash.json</c> starting at <paramref name="startDirectory"/> and walking up.
+    /// Finds config starting at <paramref name="startDirectory"/> and walking up.
     /// </summary>
     public static string? FindConfigFile(string startDirectory)
     {
@@ -40,15 +60,51 @@ public static class ConfigurationLoader
 
         while (directory is not null)
         {
-            var candidate = Path.Combine(directory.FullName, ConfigFileName);
-            if (File.Exists(candidate))
+            var storeConfig = Path.Combine(directory.FullName, ProjectStorePaths.StoreDirectoryName, ProjectStorePaths.ConfigFileName);
+            if (File.Exists(storeConfig))
             {
-                return candidate;
+                return storeConfig;
+            }
+
+            var legacy = Path.Combine(directory.FullName, ProjectStorePaths.LegacyConfigFileName);
+            if (File.Exists(legacy))
+            {
+                return legacy;
             }
 
             directory = directory.Parent;
         }
 
         return null;
+    }
+
+    /// <summary>Path to <c>.pester-dash/config.json</c> in the project root.</summary>
+    public static string GetProjectConfigPath(string projectRoot) =>
+        ProjectStorePaths.GetConfigPath(projectRoot);
+
+    private static string? ResolveConfigPath(string projectRoot)
+    {
+        var storeConfig = ProjectStorePaths.GetConfigPath(projectRoot);
+        if (File.Exists(storeConfig))
+        {
+            return storeConfig;
+        }
+
+        var legacy = ProjectStorePaths.GetLegacyConfigPath(projectRoot);
+        if (File.Exists(legacy))
+        {
+            return legacy;
+        }
+
+        return null;
+    }
+
+    private static PesterDashOptions CreateDefaultOptions(string projectRoot)
+    {
+        _ = projectRoot;
+        return new PesterDashOptions
+        {
+            OutputDirectory = $"{ProjectStorePaths.StoreDirectoryName}/{ProjectStorePaths.ResultsDirectoryName}",
+        };
     }
 }

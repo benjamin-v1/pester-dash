@@ -20,8 +20,17 @@ public sealed class PesterDashOptions
     public int MaxFailures { get; set; } = 100;
 
     /// <summary>Directory for test results and coverage artefacts.</summary>
-    public string OutputDirectory { get; set; } = ".artifacts";
+    public string OutputDirectory { get; set; } = ".pester-dash/results";
+
+    /// <summary>Whether to run PSScriptAnalyzer on scoped source files.</summary>
+    public bool Analyser { get; set; } = true;
 
     /// <summary>Additional directory names to exclude from discovery.</summary>
     public IList<string> IgnoredDirectories { get; set; } = [];
+
+    /// <summary>Write full Pester process output and run metadata to a debug log file.</summary>
+    public bool Debug { get; set; }
+
+    /// <summary>User-selected test and source files for runs.</summary>
+    public RunScopeOptions RunScope { get; set; } = new();
 }
